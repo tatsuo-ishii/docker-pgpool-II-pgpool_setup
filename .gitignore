@@ -1,0 +1,10 @@
+# emacs autosave files. You need to change to "#:#" if you are using git
+# 1.6.1 or before.
+\#*#
+*~
+*.o
+*.a
+*.so
+*.lo
+*.la
+*.orig
