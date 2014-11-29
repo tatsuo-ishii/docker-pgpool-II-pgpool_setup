@@ -27,9 +27,17 @@ RUN rpm -ivh /tmp/${DEV_RPM}
 RUN wget http://www.pgpool.net/download.php?f=${EXTENSION_RPM} -O /tmp/${EXTENSION_RPM}
 RUN rpm -ivh /tmp/${EXTENSION_RPM}
 
-# Install necessary buid tools and regression test tools
+# Install necessary packages for pgpool_setup
 RUN yum install -y ed vi which openssh-server openssh-clients tar memcached-devel
 RUN yum install -y rsync
+
+# Install necessary packages for pgpoolAdmin
+RUN yum install -y httpd php php-pgsql
+
+# Install pgpoolAdmin
+ENV PGPOOLADMIN pgpoolAdmin-3.4.0-1.pgdg.noarch.rpm
+RUN wget http://www.pgpool.net/download.php?f=${PGPOOLADMIN} -O /tmp/${PGPOOLADMIN}
+RUN rpm -ivh /tmp/${PGPOOLADMIN}
 
 # Setup postgres account
 ENV BASHPROFILE .bash_profile
@@ -44,7 +52,16 @@ RUN su -c 'ssh-keygen -N "" -t rsa -f $PGHOME/.ssh/id_rsa;cp $PGHOME/.ssh/id_rsa
 RUN su -c 'echo "StrictHostKeyChecking no" > $PGHOME/.ssh/config' postgres
 RUN echo "postgres:postgres" | chpasswd
 
+# Just in case set root password
+RUN echo "root:root" | chpasswd
+
+# Run apache2 as "postgres" user for pgpoolAdmin
+RUN sed -ri 's/User apache/User postgres/' /etc/httpd/conf/httpd.conf
+RUN sed -ri 's/Groupr apache/Group postgres/' /etc/httpd/conf/httpd.conf
+
 # Add files
 ADD pgpool_setup /usr/bin/pgpool_setup
+ADD pgmgt.conf.php /var/www/html/pgpoolAdmin/conf/pgmgt.conf.php
 ADD start.sh /tmp/start.sh
+ADD pgpool_setup.sh /tmp/pgpool_setup.sh
 CMD /tmp/start.sh

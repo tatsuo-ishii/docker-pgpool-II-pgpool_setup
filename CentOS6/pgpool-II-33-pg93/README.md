@@ -1,4 +1,4 @@
-How to run regression test
+How to run container (Note: still under construction)
 ==================
 
 ### 1. Build docker image

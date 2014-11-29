@@ -5,13 +5,14 @@ mount -t tmpfs -o rw,nosuid,nodev,noexec,relatime,size=256M tmpfs /dev/shm
 sysctl -w kernel.shmmax=1063256064
 sysctl -w kernel.shmall=259584
 ipcs -l
+
+# Start servers
 service sshd start
-if [ ! -d /var/volum/$PGPOOL_BRANCH ];then
-    mkdir /var/volum/$PGPOOL_BRANCH
-fi
+service httpd start
 service memcached start
-chown -R postgres /var/volum/$PGPOOL_BRANCH
+
 export PGBIN=/usr/pgsql-${POSTGRESQL_VERSION}/bin
 export PGPOOL_INSTALL_DIR=/usr
 export PGPOOLDIR=/etc/pgpool-II
-su postgres
+chown postgres /var/www/html/pgpoolAdmin/conf/pgmgt.conf.php
+su -c 'sh /tmp/pgpool_setup.sh' postgres
