@@ -1,4 +1,0 @@
-docker のIPを調べる
-sudo docker inspect --format ' {{ .NetworkSettings.IPAddress }}' 49a45ad7eb8e
-
- docker commit pgpool_demo pgpool_demo:twonodes
