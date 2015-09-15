@@ -57,7 +57,7 @@ RUN echo "root:root" | chpasswd
 
 # Run apache2 as "postgres" user for pgpoolAdmin
 RUN sed -ri 's/User apache/User postgres/' /etc/httpd/conf/httpd.conf
-RUN sed -ri 's/Groupr apache/Group postgres/' /etc/httpd/conf/httpd.conf
+RUN sed -ri 's/Group apache/Group postgres/' /etc/httpd/conf/httpd.conf
 
 # Add files
 ADD pgpool_setup /usr/bin/pgpool_setup
